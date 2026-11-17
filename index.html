@@ -56,7 +56,7 @@ input{font:inherit;font-weight:700;width:100%;padding:8px 14px;border:3px solid 
 @media(prefers-reduced-motion:reduce){.mas2{animation:none}}
 @media(max-width:999px){#play.on{grid-template-columns:auto!important}#play .hud{grid-column:1!important}#play .side{display:none!important}}
 @media(min-aspect-ratio:21/20){
-#app{max-width:2000px;padding:16px 28px}
+#app{max-width:2000px;padding:12px 20px}
 #menu.on{display:grid;grid-template-columns:1fr 1fr;align-content:center;gap:14px 48px;min-height:calc(100dvh - 40px)}
 #menu>*{grid-column:2}#menu #mas{grid-column:1;grid-row:1/8;justify-self:center;width:min(400px,100%);height:auto}
 #play.on{display:grid;grid-template-columns:auto 280px;gap:12px 22px;align-content:center;justify-content:center;align-items:start;min-height:calc(100dvh - 40px)}
@@ -105,6 +105,7 @@ input{font:inherit;font-weight:700;width:100%;padding:8px 14px;border:3px solid 
  <div class="hud">
   <button class="btn" id="back" aria-label="Tạm dừng hoặc thoát" style="padding:2px 14px">‹ Thoát</button>
   <button class="btn snd" aria-label="Bật tắt âm thanh" style="padding:2px 12px"></button>
+  <button class="btn" id="fs" aria-label="Toàn màn hình" style="padding:2px 12px">⛶</button>
   <div class="pill">Điểm <b id="sc">0</b></div>
   <div class="pill" id="tmP"><b id="tm">30</b></div>
   <div class="pill">Kỷ lục <b id="bs">0</b></div>
@@ -274,7 +275,7 @@ cv.addEventListener('pointerup',e=>{if(!S||!S.run)return;const[x,y]=pt(e);if(Mat
 addEventListener('keydown',e=>{if(!S||!S.run||!$('#play').classList.contains('on'))return;if(e.key=='Escape'){S.paused?pauseOff():pauseOn();return}if(S.paused)return;
  if(e.key=='ArrowLeft')S.ang=Math.min(Math.PI-.15,S.ang+.05);else if(e.key=='ArrowRight')S.ang=Math.max(.15,S.ang-.05);
  else if(e.key==' '||e.key=='ArrowUp'){e.preventDefault();shoot()}else if(e.key=='x'||e.key=='X')swap()});
-function fit(){const L=innerWidth>innerHeight*1.05,a=W/H;let w=L?Math.min(Math.min(innerWidth,2000)-(innerWidth>=1000?358:56),(innerHeight-118)*a):Math.min(Math.min(innerWidth,440)-24,(innerHeight-110)*a);w=Math.max(220,w);cv.style.width=w+'px';cv.style.height=w/a+'px';const k=Math.min(3,Math.max(1,w/W*(devicePixelRatio||1)));cv.width=Math.round(W*k);cv.height=Math.round(H*k);g.setTransform(cv.width/W,0,0,cv.height/H,0,0)}
+function fit(){const L=innerWidth>innerHeight*1.05,a=W/H,hh=$('#play .hud').offsetHeight||44,avH=innerHeight-hh-(L?40:56);let w=L?Math.min(Math.min(innerWidth,2000)-(innerWidth>=1000?358:56),avH*a):Math.min(Math.min(innerWidth,440)-24,avH*a);w=Math.max(220,w);cv.style.width=w+'px';cv.style.height=w/a+'px';const k=Math.min(3,Math.max(1,w/W*(devicePixelRatio||1)));cv.width=Math.round(W*k);cv.height=Math.round(H*k);g.setTransform(cv.width/W,0,0,cv.height/H,0,0)}
 const m2=$('#mas').cloneNode(true);m2.removeAttribute('id');m2.removeAttribute('width');m2.setAttribute('class','mas2');$('#play .hud').appendChild(m2);
 function sideFill(){$('#sideT').textContent='Top 5 · '+S.M.n;const a=(lbLoad()[S.m]||[]).slice(0,5),u=$('#top5');u.innerHTML=a.length?'':'<p>Chưa có điểm nào. Bạn sẽ là số 1!</p>';a.forEach((e,i)=>{const li=document.createElement('li');li.innerHTML='<span class="r">'+(['🥇','🥈','🥉'][i]||i+1)+'</span><span class="n"></span><b>'+e.s+'</b>';li.querySelector('.n').textContent=e.n;u.appendChild(li)})}
 addEventListener('resize',fit);
@@ -283,7 +284,7 @@ addEventListener('resize',fit);
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id==id))}
 document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>start(b.dataset.m));
 const pauseOn=()=>{if(!S||!S.run)return;S.paused=1;$('#pause').classList.add('on');$('#rs').focus()},pauseOff=()=>{if(S)S.paused=0;$('#pause').classList.remove('on')};
-$('#back').onclick=pauseOn;$('#rs').onclick=pauseOff;$('#rt').onclick=()=>start(lastMode,1);
+$('#back').onclick=pauseOn;$('#fs').onclick=()=>{const d=document;if(d.fullscreenElement)d.exitFullscreen();else if(d.documentElement.requestFullscreen)d.documentElement.requestFullscreen().catch(()=>{})};$('#rs').onclick=pauseOff;$('#rt').onclick=()=>start(lastMode,1);
 $('#ex').onclick=()=>{pauseOff();if(S)S.run=false;show('menu')};
 $('#mn').onclick=()=>{$('#over').classList.remove('on');show('menu')};
 $('#ag').onclick=()=>start(lastMode,1);
